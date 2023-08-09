@@ -1,0 +1,254 @@
+<?php
+use Drupal\node\Entity\NodeType;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+
+/**
+ * Implements hook_install().
+ */
+function issues_install() {
+  // Create a new content type.
+  $content_type = NodeType::create([
+    'type' => 'issues',
+    'name' => 'Issues Content Type',
+  ]);
+  $content_type->save();
+
+  // Define the field storage for the custom taxonomy reference field.
+  // Attach the field to the content type.
+  // Define the field storage for the custom user reference field.
+  $user_field_storage = FieldStorageConfig::create([
+    'field_name' => 'custom_user_reference',
+    'entity_type' => 'node',
+    'type' => 'entity_reference',
+    'settings' => [
+      'target_type' => 'user',
+      'handler' => 'default',
+    ],
+  ]);
+  $user_field_storage->save();
+
+  // Attach the user reference field to the content type.
+  $user_field = FieldConfig::create([
+    'field_name' => 'custom_user_reference',
+    'entity_type' => 'node',
+    'bundle' => 'issues',
+    'label' => 'Custom User Reference',
+    'field_storage' => $user_field_storage,
+  ]);
+  $user_field->save();
+
+  // Define the field storage for the reporter field.
+  $reporter_field_storage = FieldStorageConfig::create([
+    'field_name' => 'reporter',
+    'entity_type' => 'node',
+    'type' => 'entity_reference',
+    'settings' => [
+      'target_type' => 'user',
+      'handler' => 'default',
+    ],
+  ]);
+  $reporter_field_storage->save();
+
+  // Attach the reporter field to the content type.
+  $reporter_field = FieldConfig::create([
+    'field_name' => 'reporter',
+    'entity_type' => 'node',
+    'bundle' => 'issues',
+    'label' => 'Reporter',
+    'field_storage' => $reporter_field_storage,
+  ]);
+  $reporter_field->save();
+
+  // Define the field storage for the short description field.
+  $short_description_field_storage = FieldStorageConfig::create([
+    'field_name' => 'short_description',
+    'entity_type' => 'node',
+    'type' => 'text',
+  ]);
+  $short_description_field_storage->save();
+
+  // Attach the short description field to the content type.
+  $short_description_field = FieldConfig::create([
+    'field_name' => 'short_description',
+    'entity_type' => 'node',
+    'bundle' => 'issues',
+    'label' => 'Short Description',
+    'field_storage' => $short_description_field_storage,
+  ]);
+  $short_description_field->save();
+
+  // Define the field storage for the priority field.
+  $priority_field_storage = FieldStorageConfig::create([
+    'field_name' => 'priority',
+    'entity_type' => 'node',
+    'type' => 'entity_reference',
+    'settings' => [
+      'target_type' => 'taxonomy_term',
+      'handler' => 'default',
+      'handler_settings' => [
+        'target_bundles' => ['priority'], // Replace with the priority vocabulary's machine name
+      ],
+    ],
+  ]);
+  $priority_field_storage->save();
+
+  // Attach the priority field to the content type.
+  $priority_field = FieldConfig::create([
+    'field_name' => 'priority',
+    'entity_type' => 'node',
+    'bundle' => 'issues',
+    'label' => 'Priority',
+    'field_storage' => $priority_field_storage,
+  ]);
+  $priority_field->save();
+
+  // Define the field storage for the field_status field.
+  $field_status_field_storage = FieldStorageConfig::create([
+    'field_name' => 'field_status',
+    'entity_type' => 'node',
+    'type' => 'entity_reference',
+    'settings' => [
+      'target_type' => 'taxonomy_term',
+      'handler' => 'default',
+      'handler_settings' => [
+        'target_bundles' => ['field_status'], // Replace with the status vocabulary's machine name
+      ],
+    ],
+  ]);
+  $field_status_field_storage->save();
+
+  // Attach the field_status field to the content type.
+  $field_status_field = FieldConfig::create([
+    'field_name' => 'field_status',
+    'entity_type' => 'node',
+    'bundle' => 'issues',
+    'label' => 'Field Status',
+    'field_storage' => $field_status_field_storage,
+  ]);
+  $field_status_field->save();
+
+  // Define the field storage for the issue type field.
+  $issue_type_field_storage = FieldStorageConfig::create([
+    'field_name' => 'issue_type',
+    'entity_type' => 'node',
+    'type' => 'entity_reference',
+    'settings' => [
+      'target_type' => 'taxonomy_term',
+      'handler' => 'default',
+      'handler_settings' => [
+        'target_bundles' => ['issue_type'], // Replace with the issue type vocabulary's machine name
+      ],
+    ],
+  ]);
+  $issue_type_field_storage->save();
+
+  // Attach the issue type field to the content type.
+  $issue_type_field = FieldConfig::create([
+    'field_name' => 'issue_type',
+    'entity_type' => 'node',
+    'bundle' => 'issues',
+    'label' => 'Issue Type',
+    'field_storage' => $issue_type_field_storage,
+  ]);
+  $issue_type_field->save();
+
+  // Define the field storage for the due date field.
+  $due_date_field_storage = FieldStorageConfig::create([
+    'field_name' => 'due_date',
+    'entity_type' => 'node',
+    'type' => 'datetime',
+    'settings' => [
+      'datetime_type' => 'date',
+      'datetime_format' => 'Y-m-d',
+    ],
+  ]);
+  $due_date_field_storage->save();
+
+  // Attach the due date field to the content type.
+  $due_date_field = FieldConfig::create([
+    'field_name' => 'due_date',
+    'entity_type' => 'node',
+    'bundle' => 'issues',
+    'label' => 'Due Date',
+    'field_storage' => $due_date_field_storage,
+  ]);
+  $due_date_field->save();
+
+  // Load the display settings for the custom content type.
+  $entity_type_manager = \Drupal::service('entity_type.manager');
+  $entity_display_repository = \Drupal::service('entity_display.repository');
+
+  /** @var \Drupal\node\Entity\NodeType $content_type */
+  $content_type = $entity_type_manager->getStorage('node_type')->load('issues');
+
+  $view_display = $entity_display_repository->getViewDisplay('node', $content_type->id(), 'default');
+  $form_display = $entity_display_repository->getFormDisplay('node', $content_type->id(), 'default');
+
+  // Enable the display of your fields on the "default" view mode.
+  $view_display->setComponent('custom_user_reference', [
+    'type' => 'entity_reference_label',
+    'weight' => 1,
+  ]);
+  $view_display->setComponent('reporter', [
+    'type' => 'entity_reference_label',
+    'weight' => 2,
+  ]);
+  $view_display->setComponent('short_description', [
+    'type' => 'text_default',
+    'weight' => 3,
+  ]);
+  $view_display->setComponent('priority', [
+    'type' => 'entity_reference_label',
+    'weight' => 4,
+  ]);
+  $view_display->setComponent('field_status', [
+    'type' => 'entity_reference_label',
+    'weight' => 5,
+  ]);
+  $view_display->setComponent('issue_type', [
+    'type' => 'entity_reference_label',
+    'weight' => 6,
+  ]);
+  $view_display->setComponent('due_date', [
+    'type' => 'datetime_default',
+    'weight' => 7,
+  ]);
+  $view_display->save();
+
+  // Enable the display of your fields on the "default" form mode.
+  $form_display->setComponent('custom_user_reference', [
+    'type' => 'entity_reference_autocomplete',
+    'weight' => 1,
+  ]);
+  $form_display->setComponent('reporter', [
+    'type' => 'entity_reference_autocomplete',
+    'weight' => 2,
+  ]);
+  $form_display->setComponent('short_description', [
+    'type' => 'text_textarea',
+    'weight' => 3,
+  ]);
+  $form_display->setComponent('priority', [
+    'type' => 'entity_reference_autocomplete',
+    'weight' => 4,
+  ]);
+  $form_display->setComponent('field_status', [
+    'type' => 'entity_reference_autocomplete',
+    'weight' => 5,
+  ]);
+  $form_display->setComponent('issue_type', [
+    'type' => 'entity_reference_autocomplete',
+    'weight' => 6,
+  ]);
+  $form_display->setComponent('due_date', [
+    'type' => 'datetime_default',
+    'weight' => 7,
+  ]);
+  $form_display->save();
+
+  // Flush the cache to recognize the new content type and fields.
+  $entity_type_manager->getStorage('node_type')->resetCache();
+}

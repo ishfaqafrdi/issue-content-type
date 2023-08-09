@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the issues module.
+ */
+
+
+ $vid = "priority";
+ $name = "priorities";
+
+ $vocabularies = \Drupal\taxonomy\Entity\Vocabulary::loadMultiple();
+
+ if (!isset($vocabularies[$vid])) {
+   $vocabulary = \Drupal\taxonomy\Entity\Vocabulary::create(array(
+         'vid' => $vid,
+         'description' => '',
+         'name' => $name,
+   ))->save();
+
+   $categories = ['Critical', 'High', 'Low', 'Trivial'];
+   foreach ($categories as $category) {
+   $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->create([
+     'name' => $category,
+     'vid' => $vid,
+   ])->save();
+   }
+ }
+ else {
+   \Drupal::messenger()->addMessage($name . ' vocabulary alredy exits');
+ }
+
+
+ /**
+  * @file
+  * Install, update and uninstall functions for the issues module.
+  */
+
+
+  $vid = "issue_type";
+  $name = "Issuetype";
+
+  $vocabularies = \Drupal\taxonomy\Entity\Vocabulary::loadMultiple();
+
+  if (!isset($vocabularies[$vid])) {
+    $vocabulary = \Drupal\taxonomy\Entity\Vocabulary::create(array(
+          'vid' => $vid,
+          'description' => '',
+          'name' => $name,
+    ))->save();
+
+    $categories = ['New feature', 'Change', 'Task', 'Bug', 'Improvement'];
+    foreach ($categories as $category) {
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->create([
+      'name' => $category,
+      'vid' => $vid,
+    ])->save();
+    }
+  }
+  else {
+    \Drupal::messenger()->addMessage($name . ' vocabulary alredy exits');
+  }
+
+  /**
+   * @file
+   * Install, update and uninstall functions for the issues module.
+   */
+
+
+   $vid = "field_status";
+   $name = "fieldstatus";
+
+   $vocabularies = \Drupal\taxonomy\Entity\Vocabulary::loadMultiple();
+
+   if (!isset($vocabularies[$vid])) {
+     $vocabulary = \Drupal\taxonomy\Entity\Vocabulary::create(array(
+           'vid' => $vid,
+           'description' => '',
+           'name' => $name,
+     ))->save();
+
+     $categories = ['To Do', 'In Progress', 'In Review', 'Done'];
+     foreach ($categories as $category) {
+     $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->create([
+       'name' => $category,
+       'vid' => $vid,
+     ])->save();
+     }
+   }
+   else {
+     \Drupal::messenger()->addMessage($name . ' vocabulary alredy exits');
+   }
